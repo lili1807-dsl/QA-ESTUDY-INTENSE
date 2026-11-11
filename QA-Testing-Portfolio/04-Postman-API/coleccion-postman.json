@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "QA Testing Portfolio - Postman Echo",
+    "description": "Pruebas HTTP ejecutables con servicio público de eco. No simula persistencia ERP.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - parametros",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/get?origen=qa",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "get"
+          ],
+          "query": [
+            {
+              "key": "origen",
+              "value": "qa"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Parametro devuelto', function () { pm.expect(pm.response.json().args.origen).to.eql('qa'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"nombre\":\"Ana López\",\"cantidad\":2}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/post",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "post"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200 (eco)', function () { pm.response.to.have.status(200); });",
+              "pm.test('JSON recibido', function () { var data = pm.response.json().json; pm.expect(data.nombre).to.eql('Ana López'); pm.expect(data.cantidad).to.eql(2); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
